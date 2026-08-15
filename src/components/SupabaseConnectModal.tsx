@@ -10,7 +10,10 @@ import {
   Cpu, 
   CheckCircle2,
   Zap,
-  HardDrive
+  HardDrive,
+  Download,
+  FileJson,
+  Layers
 } from 'lucide-react';
 
 interface SupabaseConnectModalProps {
@@ -22,7 +25,7 @@ export const SupabaseConnectModal: React.FC<SupabaseConnectModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [activeTab, setActiveTab] = useState<'unity' | 'rest' | 'curl'>('unity');
+  const [activeTab, setActiveTab] = useState<'postman' | 'unity' | 'rest' | 'curl'>('postman');
   const [copiedSection, setCopiedSection] = useState<string | null>(null);
 
   if (!isOpen) return null;
@@ -31,11 +34,16 @@ export const SupabaseConnectModal: React.FC<SupabaseConnectModalProps> = ({
   const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   const wsUrl = `${wsProtocol}//${window.location.host}/ws`;
   const apiUrl = `${origin}/api/v1`;
+  const postmanCollectionUrl = `${origin}/api/v1/postman-collection.json`;
 
   const copyText = (text: string, sectionId: string) => {
     navigator.clipboard.writeText(text);
     setCopiedSection(sectionId);
     setTimeout(() => setCopiedSection(null), 2000);
+  };
+
+  const handleDownloadPostman = () => {
+    window.open(postmanCollectionUrl, '_blank');
   };
 
   const unityCSharpCode = `// DBHyperMediaClient.cs - Unity C# Realtime Client
@@ -134,7 +142,7 @@ public class DBHyperMediaClient : MonoBehaviour
               <Radio className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white tracking-tight font-mono">Connect to DB_HyperMedia</h2>
+              <h2 className="text-base font-bold text-white tracking-tight font-mono">Connect DB_HyperMedia (Postman & Unity)</h2>
               <div className="flex items-center space-x-2 mt-0.5">
                 <span className="text-[11px] text-[#8e8e8e]">Direct Endpoint Connection</span>
                 <span className="inline-flex items-center px-1.5 py-0.2 rounded bg-[#1e2f26] text-[#3ecf8e] text-[10px] font-mono font-semibold border border-[#2b5942]">
@@ -158,7 +166,7 @@ public class DBHyperMediaClient : MonoBehaviour
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[11px] font-mono text-[#888888] flex items-center space-x-1.5">
                 <Globe className="w-3 h-3 text-[#3ecf8e]" />
-                <span>REST API Base URL</span>
+                <span>Base API URL (Postman)</span>
               </span>
               <button
                 onClick={() => copyText(apiUrl, 'api_base')}
@@ -173,23 +181,24 @@ public class DBHyperMediaClient : MonoBehaviour
             </div>
           </div>
 
-          {/* WebSocket URL Card */}
+          {/* Postman Collection 1-Click */}
           <div className="bg-[#1c1c1c] border border-[#2e2e2e] rounded-lg p-3">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-[11px] font-mono text-[#888888] flex items-center space-x-1.5">
-                <Zap className="w-3 h-3 text-[#f59e0b]" />
-                <span>WebSocket URL (500ms Realtime)</span>
+                <FileJson className="w-3 h-3 text-orange-400" />
+                <span>Postman Collection v2.1</span>
               </span>
-              <button
-                onClick={() => copyText(wsUrl, 'ws_url')}
-                className="text-[11px] text-[#3ecf8e] hover:underline flex items-center space-x-1 font-mono"
+              <a
+                href={postmanCollectionUrl}
+                download="DB_HyperMedia_Postman_Collection.json"
+                className="text-[11px] text-orange-400 hover:underline flex items-center space-x-1 font-mono"
               >
-                {copiedSection === 'ws_url' ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                <span>{copiedSection === 'ws_url' ? 'Tersalin' : 'Copy'}</span>
-              </button>
+                <Download className="w-3 h-3" />
+                <span>Download .json</span>
+              </a>
             </div>
-            <div className="bg-[#141414] border border-[#262626] rounded px-2.5 py-1.5 font-mono text-xs text-[#ededed] truncate">
-              {wsUrl}
+            <div className="bg-[#141414] border border-[#262626] rounded px-2.5 py-1.5 font-mono text-xs text-orange-300 truncate">
+              {postmanCollectionUrl}
             </div>
           </div>
         </div>
@@ -197,15 +206,15 @@ public class DBHyperMediaClient : MonoBehaviour
         {/* Tab Navigation */}
         <div className="flex items-center space-x-1 border-b border-[#282828] mb-3">
           <button
-            onClick={() => setActiveTab('unity')}
+            onClick={() => setActiveTab('postman')}
             className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center space-x-1.5 ${
-              activeTab === 'unity'
-                ? 'border-[#3ecf8e] text-[#3ecf8e]'
+              activeTab === 'postman'
+                ? 'border-orange-400 text-orange-400'
                 : 'border-transparent text-[#888888] hover:text-[#ededed]'
             }`}
           >
-            <Cpu className="w-3.5 h-3.5" />
-            <span>Unity C# Script</span>
+            <Layers className="w-3.5 h-3.5" />
+            <span>Postman Guide & URLs</span>
           </button>
 
           <button
@@ -218,6 +227,18 @@ public class DBHyperMediaClient : MonoBehaviour
           >
             <Globe className="w-3.5 h-3.5" />
             <span>REST Endpoints</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('unity')}
+            className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors flex items-center space-x-1.5 ${
+              activeTab === 'unity'
+                ? 'border-[#3ecf8e] text-[#3ecf8e]'
+                : 'border-transparent text-[#888888] hover:text-[#ededed]'
+            }`}
+          >
+            <Cpu className="w-3.5 h-3.5" />
+            <span>Unity C# Script</span>
           </button>
 
           <button
@@ -235,6 +256,109 @@ public class DBHyperMediaClient : MonoBehaviour
 
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto pr-1">
+          {activeTab === 'postman' && (
+            <div className="space-y-3 font-mono text-xs">
+              <div className="p-3 rounded-lg bg-[#1e241e] border border-[#2d4d38] flex items-center justify-between font-sans">
+                <div>
+                  <div className="font-bold text-white text-xs">🔥 Siap Pakai di Postman (1-Click Import)</div>
+                  <div className="text-[11px] text-[#90c0a0] mt-0.5">
+                    Buka Postman ➔ Klik <strong>Import</strong> ➔ Masukkan Link / Upload file JSON di bawah.
+                  </div>
+                </div>
+                <a
+                  href={postmanCollectionUrl}
+                  download="DB_HyperMedia_Postman_Collection.json"
+                  className="px-3 py-1.5 bg-[#3ecf8e] hover:bg-[#34b27b] text-[#121212] font-semibold rounded text-xs transition-colors flex items-center space-x-1.5 shrink-0"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download Collection</span>
+                </a>
+              </div>
+
+              {/* Endpoint 1: Root */}
+              <div className="p-3 rounded-lg bg-[#141414] border border-[#282828] space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="px-1.5 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800 text-[10px] font-bold">GET</span>
+                    <span className="text-white font-bold">{apiUrl}</span>
+                  </div>
+                  <button onClick={() => copyText(apiUrl, 'pm_root')} className="text-slate-400 hover:text-white">
+                    {copiedSection === 'pm_root' ? <Check className="w-3 h-3 text-[#3ecf8e]" /> : <Copy className="w-3 h-3" />}
+                  </button>
+                </div>
+                <div className="text-[11px] font-sans text-[#888888]">Mengembalikan JSON index DB_HyperMedia & semua tabel data.</div>
+              </div>
+
+              {/* Endpoint 2: GET finger_sensor */}
+              <div className="p-3 rounded-lg bg-[#141414] border border-[#282828] space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="px-1.5 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800 text-[10px] font-bold">GET</span>
+                    <span className="text-white font-bold">{apiUrl}/finger_sensor</span>
+                  </div>
+                  <button onClick={() => copyText(`${apiUrl}/finger_sensor`, 'pm_get_finger')} className="text-slate-400 hover:text-white">
+                    {copiedSection === 'pm_get_finger' ? <Check className="w-3 h-3 text-[#3ecf8e]" /> : <Copy className="w-3 h-3" />}
+                  </button>
+                </div>
+                <div className="text-[11px] font-sans text-[#888888]">Mengambil data 5 sensor flex jari (0-100).</div>
+              </div>
+
+              {/* Endpoint 3: PUT finger_sensor */}
+              <div className="p-3 rounded-lg bg-[#141414] border border-[#282828] space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold">PUT</span>
+                    <span className="text-white font-bold">{apiUrl}/finger_sensor/1</span>
+                  </div>
+                  <button onClick={() => copyText(`{"nilai": 85}`, 'pm_body_finger')} className="text-slate-400 hover:text-white flex items-center space-x-1 text-[10px]">
+                    {copiedSection === 'pm_body_finger' ? <Check className="w-3 h-3 text-[#3ecf8e]" /> : <Copy className="w-3 h-3" />}
+                    <span>Copy Body JSON</span>
+                  </button>
+                </div>
+                <div className="text-[11px] font-sans text-[#888888]">Postman Body (raw JSON):</div>
+                <pre className="p-2 bg-[#101010] rounded text-[#3ecf8e] text-[11px]">
+{`{
+  "nilai": 85
+}`}
+                </pre>
+              </div>
+
+              {/* Endpoint 4: GET servo_control */}
+              <div className="p-3 rounded-lg bg-[#141414] border border-[#282828] space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="px-1.5 py-0.5 rounded bg-sky-950 text-sky-400 border border-sky-800 text-[10px] font-bold">GET</span>
+                    <span className="text-white font-bold">{apiUrl}/servo_control</span>
+                  </div>
+                  <button onClick={() => copyText(`${apiUrl}/servo_control`, 'pm_get_servo')} className="text-slate-400 hover:text-white">
+                    {copiedSection === 'pm_get_servo' ? <Check className="w-3 h-3 text-[#3ecf8e]" /> : <Copy className="w-3 h-3" />}
+                  </button>
+                </div>
+                <div className="text-[11px] font-sans text-[#888888]">Mengambil data 5 servo limit gerak (0-100).</div>
+              </div>
+
+              {/* Endpoint 5: PUT servo_control */}
+              <div className="p-3 rounded-lg bg-[#141414] border border-[#282828] space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <span className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold">PUT</span>
+                    <span className="text-white font-bold">{apiUrl}/servo_control/1</span>
+                  </div>
+                  <button onClick={() => copyText(`{"limit_genggam": 80}`, 'pm_body_servo')} className="text-slate-400 hover:text-white flex items-center space-x-1 text-[10px]">
+                    {copiedSection === 'pm_body_servo' ? <Check className="w-3 h-3 text-[#3ecf8e]" /> : <Copy className="w-3 h-3" />}
+                    <span>Copy Body JSON</span>
+                  </button>
+                </div>
+                <div className="text-[11px] font-sans text-[#888888]">Postman Body (raw JSON):</div>
+                <pre className="p-2 bg-[#101010] rounded text-amber-300 text-[11px]">
+{`{
+  "limit_genggam": 80
+}`}
+                </pre>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'unity' && (
             <div className="space-y-3">
               <div className="flex items-center justify-between text-xs">

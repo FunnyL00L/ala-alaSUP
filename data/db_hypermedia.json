@@ -1,0 +1,70 @@
+{
+  "database": "DB_HyperMedia",
+  "version": "1.0.0",
+  "saved_at": "2026-08-15T22:36:44.323Z",
+  "storage_location": "/app/applet/data/db_hypermedia.json",
+  "finger_sensor": [
+    {
+      "id": 1,
+      "nama": "Jempol",
+      "nilai": 0,
+      "updated_at": "2026-08-15 22:22:35.031+00"
+    },
+    {
+      "id": 2,
+      "nama": "Telunjuk",
+      "nilai": 100,
+      "updated_at": "2026-08-15 22:23:29.203+00"
+    },
+    {
+      "id": 3,
+      "nama": "Tengah",
+      "nilai": 100,
+      "updated_at": "2026-08-15 22:23:31.689+00"
+    },
+    {
+      "id": 4,
+      "nama": "Manis",
+      "nilai": 100,
+      "updated_at": "2026-08-15 22:22:35.031+00"
+    },
+    {
+      "id": 5,
+      "nama": "Kelingking",
+      "nilai": 0,
+      "updated_at": "2026-08-15 22:22:35.031+00"
+    }
+  ],
+  "servo_control": [
+    {
+      "id": 1,
+      "nama": "Servo Ibu Jari",
+      "limit_genggam": 80,
+      "updated_at": "2026-08-15 22:36:44.323+00"
+    },
+    {
+      "id": 2,
+      "nama": "Servo Telunjuk",
+      "limit_genggam": 0,
+      "updated_at": "2026-08-15 22:22:35.031+00"
+    },
+    {
+      "id": 3,
+      "nama": "Servo Jari Tengah",
+      "limit_genggam": 0,
+      "updated_at": "2026-08-15 22:22:35.031+00"
+    },
+    {
+      "id": 4,
+      "nama": "Servo Jari Manis",
+      "limit_genggam": 0,
+      "updated_at": "2026-08-15 22:22:35.031+00"
+    },
+    {
+      "id": 5,
+      "nama": "Servo Kelingking",
+      "limit_genggam": 0,
+      "updated_at": "2026-08-15 22:22:35.031+00"
+    }
+  ]
+}

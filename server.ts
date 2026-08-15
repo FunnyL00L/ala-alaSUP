@@ -379,6 +379,201 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Root API Index for Postman & REST clients (Returns JSON immediately, no HTML fallback)
+app.get(['/api', '/api/v1'], (req, res) => {
+  recentPacketCountInWindow += 1;
+  const host = req.get('host') || 'localhost:3000';
+  const proto = req.protocol || 'http';
+  const baseUrl = `${proto}://${host}/api/v1`;
+
+  res.json({
+    database: 'DB_HyperMedia',
+    status: 'online',
+    version: '1.0.0',
+    message: 'DB_HyperMedia REST API siap digunakan di Postman & Unity (Tanpa API Key)',
+    value_range: '0 - 100 (Max Limit: 100)',
+    postman_collection: `${baseUrl}/postman-collection.json`,
+    endpoints: {
+      get_all_state: { method: 'GET', url: `${baseUrl}/state`, desc: 'Semua data sensor & servo' },
+      get_finger_sensors: { method: 'GET', url: `${baseUrl}/finger_sensor`, desc: 'List 5 sensor flex jari (0-100)' },
+      get_single_sensor: { method: 'GET', url: `${baseUrl}/finger_sensor/1`, desc: 'Detail sensor by ID' },
+      update_sensor: { method: 'PUT', url: `${baseUrl}/finger_sensor/1`, body: { nilai: 85 }, desc: 'Update nilai flex (0-100)' },
+      get_servo_controls: { method: 'GET', url: `${baseUrl}/servo_control`, desc: 'List 5 servo limit (0-100)' },
+      get_single_servo: { method: 'GET', url: `${baseUrl}/servo_control/1`, desc: 'Detail servo by ID' },
+      update_servo: { method: 'PUT', url: `${baseUrl}/servo_control/1`, body: { limit_genggam: 80 }, desc: 'Update limit gerak (0-100)' },
+      storage_status: { method: 'GET', url: `${baseUrl}/storage`, desc: 'Status penyimpanan file disk' },
+    },
+    tables: {
+      finger_sensor: fingerSensors,
+      servo_control: servoControls,
+    },
+  });
+});
+
+// Postman Collection v2.1.0 generator endpoint
+app.get(['/api/v1/postman-collection.json', '/api/postman-collection.json', '/postman.json'], (req, res) => {
+  const host = req.get('host') || 'localhost:3000';
+  const proto = req.protocol || 'http';
+  const baseUrl = `${proto}://${host}/api/v1`;
+
+  const postmanCollection = {
+    info: {
+      name: 'DB_HyperMedia Postman Collection',
+      description: 'Official REST API Collection for DB_HyperMedia VR Glove & Haptic Servo Control (No API Key Required). All values strictly clamped 0 - 100.',
+      schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+      _postman_id: 'db-hypermedia-v1',
+    },
+    item: [
+      {
+        name: '1. Root API Index (Semua Info & Data)',
+        request: {
+          method: 'GET',
+          header: [{ key: 'Accept', value: 'application/json' }],
+          url: {
+            raw: `${baseUrl}`,
+            protocol: proto,
+            host: host.split(':'),
+            path: ['api', 'v1'],
+          },
+          description: 'Mengambil index API DB_HyperMedia beserta seluruh payload tabel JSON',
+        },
+      },
+      {
+        name: '2. GET All State (Sensor + Servo)',
+        request: {
+          method: 'GET',
+          header: [{ key: 'Accept', value: 'application/json' }],
+          url: {
+            raw: `${baseUrl}/state`,
+            protocol: proto,
+            host: host.split(':'),
+            path: ['api', 'v1', 'state'],
+          },
+          description: 'Mengambil semua record sensor jari dan limit servo sekaligus',
+        },
+      },
+      {
+        name: '3. GET Semua finger_sensor (0-100)',
+        request: {
+          method: 'GET',
+          header: [{ key: 'Accept', value: 'application/json' }],
+          url: {
+            raw: `${baseUrl}/finger_sensor`,
+            protocol: proto,
+            host: host.split(':'),
+            path: ['api', 'v1', 'finger_sensor'],
+          },
+          description: 'Mengambil array 5 sensor flex jari (0 - 100)',
+        },
+      },
+      {
+        name: '4. GET finger_sensor by ID (Jempol)',
+        request: {
+          method: 'GET',
+          header: [{ key: 'Accept', value: 'application/json' }],
+          url: {
+            raw: `${baseUrl}/finger_sensor/1`,
+            protocol: proto,
+            host: host.split(':'),
+            path: ['api', 'v1', 'finger_sensor', '1'],
+          },
+          description: 'Mengambil data sensor ID 1 (Jempol)',
+        },
+      },
+      {
+        name: '5. PUT Update finger_sensor (Flex Nilai 0-100)',
+        request: {
+          method: 'PUT',
+          header: [
+            { key: 'Content-Type', value: 'application/json' },
+            { key: 'Accept', value: 'application/json' },
+          ],
+          body: {
+            mode: 'raw',
+            raw: JSON.stringify({ nilai: 85, nama: 'Jempol' }, null, 2),
+            options: { raw: { language: 'json' } },
+          },
+          url: {
+            raw: `${baseUrl}/finger_sensor/1`,
+            protocol: proto,
+            host: host.split(':'),
+            path: ['api', 'v1', 'finger_sensor', '1'],
+          },
+          description: 'Memperbarui nilai flex sensor jari (otomatis dibatasi 0 - 100)',
+        },
+      },
+      {
+        name: '6. GET Semua servo_control (0-100)',
+        request: {
+          method: 'GET',
+          header: [{ key: 'Accept', value: 'application/json' }],
+          url: {
+            raw: `${baseUrl}/servo_control`,
+            protocol: proto,
+            host: host.split(':'),
+            path: ['api', 'v1', 'servo_control'],
+          },
+          description: 'Mengambil array 5 limit servo gerak (0 - 100)',
+        },
+      },
+      {
+        name: '7. GET servo_control by ID',
+        request: {
+          method: 'GET',
+          header: [{ key: 'Accept', value: 'application/json' }],
+          url: {
+            raw: `${baseUrl}/servo_control/1`,
+            protocol: proto,
+            host: host.split(':'),
+            path: ['api', 'v1', 'servo_control', '1'],
+          },
+          description: 'Mengambil detail servo ID 1',
+        },
+      },
+      {
+        name: '8. PUT Update servo_control (Limit Genggam 0-100)',
+        request: {
+          method: 'PUT',
+          header: [
+            { key: 'Content-Type', value: 'application/json' },
+            { key: 'Accept', value: 'application/json' },
+          ],
+          body: {
+            mode: 'raw',
+            raw: JSON.stringify({ limit_genggam: 80, nama: 'Servo Ibu Jari' }, null, 2),
+            options: { raw: { language: 'json' } },
+          },
+          url: {
+            raw: `${baseUrl}/servo_control/1`,
+            protocol: proto,
+            host: host.split(':'),
+            path: ['api', 'v1', 'servo_control', '1'],
+          },
+          description: 'Memperbarui limit batas genggam servo (otomatis dibatasi 0 - 100)',
+        },
+      },
+      {
+        name: '9. GET Storage Status Disk',
+        request: {
+          method: 'GET',
+          header: [{ key: 'Accept', value: 'application/json' }],
+          url: {
+            raw: `${baseUrl}/storage`,
+            protocol: proto,
+            host: host.split(':'),
+            path: ['api', 'v1', 'storage'],
+          },
+          description: 'Melihat status file JSON penyimpanan lokal',
+        },
+      },
+    ],
+  };
+
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Content-Disposition', 'attachment; filename="DB_HyperMedia_Postman_Collection.json"');
+  res.json(postmanCollection);
+});
+
 // Storage Info & Sync Endpoint
 app.get('/api/v1/storage', (req, res) => {
   let fileSizeKb = 0;
