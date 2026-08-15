@@ -1,0 +1,6 @@
+{
+  "name": "DB_HyperMedia",
+  "description": "Realtime Database DB_HyperMedia untuk kontrol finger_sensor (0-100) dan servo_control (limit 0-100) dengan sinkronisasi WebSocket 500ms, penyimpanan persisten di sistem filesystem (/data/db_hypermedia.json), dan integrasi Unity VR.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
