@@ -51,6 +51,32 @@ export interface SpikeAlert {
   delta: number;
 }
 
+export interface ProtocolStats {
+  websocket: {
+    clients: number;
+    rxPackets: number;
+    txPackets: number;
+    latencyMs: number;
+    port: number;
+    endpoint: string;
+    status: 'online' | 'offline';
+  };
+  udp: {
+    registeredClients: number;
+    rxPackets: number;
+    txPackets: number;
+    latencyMs: number;
+    port: number;
+    status: 'online' | 'offline';
+  };
+  rest: {
+    totalRequests: number;
+    latencyMs: number;
+    port: number;
+    status: 'online' | 'offline';
+  };
+}
+
 export interface SystemStats {
   wsClients: number;
   uptimeSeconds: number;
@@ -61,6 +87,15 @@ export interface SystemStats {
   currentThroughput: number;
   dailyAvgThroughput: number;
   surgeCountToday: number;
+  protocols?: ProtocolStats;
 }
 
-export type ActiveNavTab = 'table_editor' | 'sql_editor' | 'realtime_traffic' | 'unity_glove' | 'connect_api' | 'storage_system';
+export type ActiveNavTab = 
+  | 'table_editor' 
+  | 'sql_editor' 
+  | 'realtime_traffic' 
+  | 'tri_protocol_hub'
+  | 'unity_glove' 
+  | 'connect_api' 
+  | 'storage_system';
+

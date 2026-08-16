@@ -8,6 +8,7 @@ import { SupabaseUnityView } from './components/SupabaseUnityView';
 import { StorageSystemView } from './components/StorageSystemView';
 import { SupabaseConnectModal } from './components/SupabaseConnectModal';
 import { JsonExportModal } from './components/JsonExportModal';
+import { TriProtocolHub } from './components/TriProtocolHub';
 
 import {
   FingerSensor,
@@ -192,12 +193,14 @@ export default function App() {
 
       const data = await res.json();
 
-      if (data.sensors) {
-        setSensors(data.sensors);
+      const sensorList = data.sensors || data.finger_sensor;
+      if (sensorList && Array.isArray(sensorList)) {
+        setSensors(sensorList);
       }
 
-      if (data.servos) {
-        setServos(data.servos);
+      const servoList = data.servos || data.servo_control;
+      if (servoList && Array.isArray(servoList)) {
+        setServos(servoList);
       }
 
       if (data.stats) {
@@ -209,8 +212,8 @@ export default function App() {
       }
 
       setIsConnected(true);
-    } catch (error) {
-      console.error('REST state error:', error);
+    } catch {
+      // Gracefully handle temporary server reconnection/offline states
       setIsConnected(false);
     }
   }, []);
@@ -225,11 +228,6 @@ export default function App() {
 
   // ============================================================
   // REALTIME REST POLLING
-  //
-  // 100 ms = 10 Hz dashboard refresh.
-  //
-  // UDP dari Unity bisa tetap 20-50 Hz.
-  // Browser tidak perlu refresh 50 Hz.
   // ============================================================
 
   useEffect(() => {
@@ -244,7 +242,7 @@ export default function App() {
       await fetchAllState();
 
       if (!destroyed) {
-        timeout = setTimeout(pollingLoop, 100);
+        timeout = setTimeout(pollingLoop, 300);
       }
     };
 
@@ -291,8 +289,8 @@ export default function App() {
         if (data.storage) {
           setStorageInfo(data.storage);
         }
-      } catch (error) {
-        console.error('Traffic fetch error:', error);
+      } catch {
+        // Silently ignore transient network glitches
       }
     };
 
@@ -630,6 +628,20 @@ export default function App() {
             }
           }}
         />
+
+        {activeTab ===
+          'tri_protocol_hub' && (
+          <TriProtocolHub
+            sensors={sensors}
+            servos={servos}
+            onUpdateSensor={
+              handleUpdateSensor
+            }
+            onUpdateServo={
+              handleUpdateServo
+            }
+          />
+        )}
 
         {activeTab ===
           'table_editor' && (

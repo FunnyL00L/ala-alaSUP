@@ -6,6 +6,7 @@ import {
   Hand, 
   Code2, 
   HardDrive,
+  Layers,
   Settings
 } from 'lucide-react';
 import { ActiveNavTab } from '../types';
@@ -20,10 +21,11 @@ export const SupabaseSidebar: React.FC<SupabaseSidebarProps> = ({
   onSelectTab,
 }) => {
   const navItems: Array<{ id: ActiveNavTab; label: string; icon: any }> = [
+    { id: 'tri_protocol_hub', label: 'Tri-Protocol Hub (WS/UDP/REST)', icon: Layers },
     { id: 'table_editor', label: 'Table Editor (finger & servo)', icon: Table2 },
-    { id: 'sql_editor', label: 'SQL Editor', icon: Terminal },
-    { id: 'realtime_traffic', label: 'Realtime & Traffic', icon: Activity },
     { id: 'unity_glove', label: 'Unity VR Glove (0-100)', icon: Hand },
+    { id: 'realtime_traffic', label: 'Realtime & Traffic', icon: Activity },
+    { id: 'sql_editor', label: 'SQL Editor', icon: Terminal },
     { id: 'storage_system', label: 'Storage Sistem (Disk)', icon: HardDrive },
     { id: 'connect_api', label: 'API Endpoints (No Key)', icon: Code2 },
   ];

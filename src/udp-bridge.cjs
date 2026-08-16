@@ -185,14 +185,14 @@ async function refreshCache() {
     const state =
       await apiGet('/state');
 
-    if (state.sensors) {
-      cachedState.sensors =
-        state.sensors;
+    const sensors = state.sensors || state.finger_sensor;
+    if (sensors && Array.isArray(sensors)) {
+      cachedState.sensors = sensors;
     }
 
-    if (state.servos) {
-      cachedState.servos =
-        state.servos;
+    const servos = state.servos || state.servo_control;
+    if (servos && Array.isArray(servos)) {
+      cachedState.servos = servos;
     }
 
     // ------------------------------------
